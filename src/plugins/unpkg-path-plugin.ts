@@ -6,12 +6,11 @@ const fileCache = localForage.createInstance({
   name: 'filecache'
 });
  
-export const unpkgPathPlugin = () => {
+export const unpkgPathPlugin = (input: string) => {
   return {
     name: 'unpkg-path-plugin',
     setup(build: esbuild.PluginBuild) {
       build.onResolve({ filter: /.*/ }, async (args: any) => {
-        console.log('onResolve', args);
         if (args.path === 'index.js') {
           return { path: args.path, namespace: 'a' };
         } 
@@ -35,10 +34,7 @@ export const unpkgPathPlugin = () => {
         if (args.path === 'index.js') {
           return {
             loader: 'jsx',
-            contents: `
-              import React, { useState } from 'react-select';
-              console.log(react, useState);
-            `,
+            contents: input,
           };
         }
 
