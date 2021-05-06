@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import { useState, useEffect, useRef } from 'react';
 import { unpkgPathPlugin } from './plugins/unpkg-path-plugin';
 import { fetchPlugin } from './plugins/fetch-plugin';
+import CodeEditor from './components/code-editor';
 
 const App: React.FC = () => {
     const [input, setInput] = useState('');
-    const [code, setCode] = useState('');
 
     const ref = useRef<any>();
     const iframe = useRef<any>();
@@ -26,6 +26,8 @@ const App: React.FC = () => {
         if (!ref.current) {
             return;
         };
+
+        iframe.current.srcdoc = html;
 
         const result = await ref.current.build({
             entryPoints: ['index.js'],
@@ -54,6 +56,7 @@ const App: React.FC = () => {
                     } catch (err) {
                         const root = document.querySelector('#root');
                         root.innerHTML = '<div style="color: red;"><h4>Runtime Error</h4>' + err + '</div>';
+                        console.error(err);
                     }
                 }, false);
             </script>
@@ -63,6 +66,10 @@ const App: React.FC = () => {
 
     return (
        <div>
+           <CodeEditor 
+             initialValue="const a = 1;"
+             onChange={(value) => setInput(value)}
+           />
            <textarea 
                 onChange={e => setInput(e.target.value)}
                 value={input}
@@ -73,8 +80,7 @@ const App: React.FC = () => {
                    Submit
                </button>
            </div>
-           <pre>{ code }</pre>
-           <iframe ref={iframe} sandbox="allow-scripts" srcDoc={html}/>
+           <iframe title="preview" ref={iframe} sandbox="allow-scripts" srcDoc={html}/>
        </div>
     );
 };
