@@ -1,6 +1,5 @@
 import './preview.css';
 import { useRef, useEffect } from 'react';
-import { directive } from 'jscodeshift';
 
 interface PreviewProps {
     code: string;
